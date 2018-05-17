@@ -350,23 +350,45 @@ for k in data_dic.keys():
     irreg_turb  = np.array(data_dic[k][0]['Turb'])
     cast_date   = mpl.dates.date2num(datetime.datetime.strptime(data_dic[k][0]['Date'][0] + ' ' + data_dic[k][0]['Time'][0],'%Y-%m-%d %H:%M:%S'))
     
+    if np.std(irreg_depth) <= 1.0:
+        cal_profile = True
+    else:
+        cal_profile = False
+
     #TODO: update with groupby statement
     for pg in press_grid:
-        ireg_ind = np.where((irreg_depth > pg) & (irreg_depth <= pg+interval))
-        mesh_depth_s = np.hstack((mesh_depth_s, np.median(irreg_sal[ireg_ind])))
-        mesh_depth_sig = np.hstack((mesh_depth_sig, np.median(irreg_sigmat[ireg_ind])))
-        mesh_depth_t = np.hstack((mesh_depth_t, np.median(irreg_temp[ireg_ind])))
-        mesh_depth_o = np.hstack((mesh_depth_o, np.median(irreg_oxy[ireg_ind])))
-        mesh_depth_osat = np.hstack((mesh_depth_osat, np.median(irreg_osat[ireg_ind])))
-        mesh_depth_chl = np.hstack((mesh_depth_chl, np.median(irreg_chlor[ireg_ind])))
-        mesh_depth_turb = np.hstack((mesh_depth_turb, np.median(irreg_turb[ireg_ind])))
-        mesh_depth_stats = np.hstack((mesh_depth_stats, ireg_ind[0].size))
+        if not cal_profile:
+            ireg_ind = np.where((irreg_depth > pg) & (irreg_depth <= pg+interval))
+            mesh_depth_s = np.hstack((mesh_depth_s, np.median(irreg_sal[ireg_ind])))
+            mesh_depth_sig = np.hstack((mesh_depth_sig, np.median(irreg_sigmat[ireg_ind])))
+            mesh_depth_t = np.hstack((mesh_depth_t, np.median(irreg_temp[ireg_ind])))
+            mesh_depth_o = np.hstack((mesh_depth_o, np.median(irreg_oxy[ireg_ind])))
+            mesh_depth_osat = np.hstack((mesh_depth_osat, np.median(irreg_osat[ireg_ind])))
+            mesh_depth_chl = np.hstack((mesh_depth_chl, np.median(irreg_chlor[ireg_ind])))
+            mesh_depth_turb = np.hstack((mesh_depth_turb, np.median(irreg_turb[ireg_ind])))
+            mesh_depth_stats = np.hstack((mesh_depth_stats, ireg_ind[0].size))
     
     if args.FillGaps:
         mask = np.isnan(mesh_depth_s)
-        mesh_depth_s[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_s[~mask], right=-100000)
+        try:
+            mesh_depth_s[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_s[~mask], right=-100000)
+        except ValueError: #handles samples with all nan's
+            mesh_depth_s[0]  = 0.0
+            mesh_depth_s[-1] = 0.0
+            mask = np.isnan(mesh_depth_s)
+            mesh_depth_s[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_s[~mask], right=-100000)
+        except TypeError: #handles a cal profile which is at a fixed depth
+            pass
         mask = np.isnan(mesh_depth_t)
-        mesh_depth_t[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_t[~mask], right=-100000)
+        try:
+            mesh_depth_t[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_t[~mask], right=-100000)
+        except ValueError: #handles samples with all nan's
+            mesh_depth_t[0]  = 0.0
+            mesh_depth_t[-1] = 0.0
+            mask = np.isnan(mesh_depth_t)
+            mesh_depth_t[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_t[~mask], right=-100000)
+        except TypeError: #handles a cal profile which is at a fixed depth
+            pass
         mask = np.isnan(mesh_depth_o)
         try:
             mesh_depth_o[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_o[~mask], right=-100000)
@@ -375,6 +397,8 @@ for k in data_dic.keys():
             mesh_depth_o[-1] = 0.0
             mask = np.isnan(mesh_depth_o)
             mesh_depth_o[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_o[~mask], right=-100000)
+        except TypeError: #handles a cal profile which is at a fixed depth
+            pass
         mask = np.isnan(mesh_depth_osat)
         try:
             mesh_depth_osat[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_osat[~mask], right=-100000)
@@ -383,6 +407,8 @@ for k in data_dic.keys():
             mesh_depth_osat[-1] = 0.0
             mask = np.isnan(mesh_depth_osat)
             mesh_depth_osat[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_osat[~mask], right=-100000)
+        except TypeError: #handles a cal profile which is at a fixed depth
+            pass        
         mask = np.isnan(mesh_depth_chl)
         try:
             mesh_depth_chl[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_chl[~mask], right=-100000)
@@ -391,6 +417,8 @@ for k in data_dic.keys():
             mesh_depth_chl[-1] = 0.0
             mask = np.isnan(mesh_depth_chl)
             mesh_depth_chl[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_chl[~mask], right=-100000)
+        except TypeError: #handles a cal profile which is at a fixed depth
+            pass
         mask = np.isnan(mesh_depth_turb)
         try:
             mesh_depth_turb[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_turb[~mask], right=-100000)
@@ -399,20 +427,30 @@ for k in data_dic.keys():
             mesh_depth_turb[-1] = 0.0
             mask = np.isnan(mesh_depth_turb)
             mesh_depth_turb[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_turb[~mask], right=-1000)
+        except TypeError: #handles a cal profile which is at a fixed depth
+            pass
         mask = np.isnan(mesh_depth_sig)
-        mesh_depth_sig[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_sig[~mask], right=-1000)        
-        mesh_depth_stats[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_stats[~mask], right=-1000)        
+        try:
+            mesh_depth_sig[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_sig[~mask], right=-100000)
+        except ValueError: #handles samples with all nan's
+            mesh_depth_sig[0]  = 0.0
+            mesh_depth_sig[-1] = 0.0
+            mask = np.isnan(mesh_depth_sig)
+            mesh_depth_sig[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_sig[~mask], right=-1000)
+        except TypeError: #handles a cal profile which is at a fixed depth
+            pass
 
-    date_time = date_time + [cast_date]
-
-    mesh_grid_s = mesh_grid_s + [mesh_depth_s]
-    mesh_grid_t = mesh_grid_t + [mesh_depth_t]
-    mesh_grid_o = mesh_grid_o + [mesh_depth_o]
-    mesh_grid_osat = mesh_grid_osat + [mesh_depth_osat]
-    mesh_grid_chl = mesh_grid_chl + [mesh_depth_chl]
-    mesh_grid_sig = mesh_grid_sig + [mesh_depth_sig]
-    mesh_grid_turb = mesh_grid_turb + [mesh_depth_turb]
-    mesh_grid_stats = mesh_grid_stats + [mesh_depth_stats]
+    if not cal_profile:
+        date_time = date_time + [cast_date]
+    
+        mesh_grid_s = mesh_grid_s + [mesh_depth_s]
+        mesh_grid_t = mesh_grid_t + [mesh_depth_t]
+        mesh_grid_o = mesh_grid_o + [mesh_depth_o]
+        mesh_grid_osat = mesh_grid_osat + [mesh_depth_osat]
+        mesh_grid_chl = mesh_grid_chl + [mesh_depth_chl]
+        mesh_grid_sig = mesh_grid_sig + [mesh_depth_sig]
+        mesh_grid_turb = mesh_grid_turb + [mesh_depth_turb]
+        mesh_grid_stats = mesh_grid_stats + [mesh_depth_stats]
 
 date_timetemp=date_time
 date_time = np.array(date_time)
