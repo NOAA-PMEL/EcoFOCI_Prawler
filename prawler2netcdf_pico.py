@@ -178,7 +178,10 @@ with open(args.DataPath) as f:
                 wdir = wdir + [np.float(line.strip().split()[5])]
                 rh = rh + [np.float(line.strip().split()[6])]
                 at = at + [np.float(line.strip().split()[7])]
-                bp = bp + [np.float(line.strip().split()[8])]
+                try:
+                    bp = bp + [np.float(line.strip().split()[8])]
+                except:
+                    bp = bp + [np.nan]
                 recnum += 1
 
 
