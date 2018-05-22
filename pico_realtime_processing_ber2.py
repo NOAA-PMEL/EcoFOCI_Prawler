@@ -150,7 +150,7 @@ class KetchMetData(object):
     r"""Download and parse pico met data from ketch.pmel.noaa.gov"""
 
     @staticmethod
-    def get_data(time,server):
+    def get_data(time,server,platform):
         r"""Download data from the PMEL engineering system.
 
         Parameters
