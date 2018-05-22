@@ -150,7 +150,7 @@ class KetchMetData(object):
     r"""Download and parse pico met data from ketch.pmel.noaa.gov"""
 
     @staticmethod
-    def get_data(time):
+    def get_data(time,server):
         r"""Download data from the PMEL engineering system.
 
         Parameters
@@ -162,8 +162,8 @@ class KetchMetData(object):
         -------
         a file-like object from which to read the data
         """
-        url = ('https://yawl.pmel.noaa.gov/tao-bin/show_spurs2prawl?prawloption=met&progid=pico&'
-                'platid=BER2&start={time:%Y}-{time:%m}-{time:%d}&end=&output=text&sensor=all').format(time=time)
+        url = (server+'/tao-bin/show_spurs2prawl?prawloption=met&progid=pico&'
+                'platid={platform}&start={time:%Y}-{time:%m}-{time:%d}&end=&output=text&sensor=all').format(time=time,platform=platform)
         fobj = urlopen(url)
         data = fobj.read()
 
@@ -222,7 +222,9 @@ parser.add_argument('-i','--image', action="store_true",
                help='Make an image plot')
 parser.add_argument('-csv_out','--csv_out', type=str,
                help='save chosen parameter to file')
-
+parser.add_argument("-s",'--ServerName', type=str,
+            default="http://yawl.pmel.noaa.gov",
+            help='server name, eg. http://yawl.pmel.noaa.gov')
 
 args = parser.parse_args()
 
@@ -238,9 +240,10 @@ if args.WindTempDataPath:
     tw_td   = RHtoTd(W['RH'],W['AT ( C)'])
     tw_wind = W['Wind Spd (m/s)'].values
 
+
 if args.met_rudix:
     print "\nDownloading Met data from Rudix system"
-    kid = KetchMetData.get_data(datetime.datetime(2018,4,30))
+    kid = KetchMetData.get_data(datetime.datetime(2018,4,30),server=args.ServerName,platform='ber2')
     data = KetchMetData.parse(kid)
     for index, val in enumerate(data['AT'][0]):
         tw_time[index] = data['datetime'][0][index]
@@ -251,6 +254,11 @@ if args.met_rudix:
     tw_temp = tw_temp.values()
     tw_td = tw_td.values()
     tw_wind = tw_wind.values()
+
+    #simple QC
+    tw_wind = np.array(tw_wind)
+    print np.where(tw_wind > 100)[0]
+    tw_wind[np.where(tw_wind > 100)[0]] = np.nan
 
 
 ### RUDICSead data as copied from the rudix server.
@@ -515,7 +523,6 @@ extent = (date_time.min(), date_time.max(), press_grid.max(), press_grid.min()) 
 if args.image:
 
     fig = plt.figure()
-    """
     ax = plt.subplot2grid((9,100), (0, 0), colspan=98)
     plt.plot(date2num(tw_time,'days since 1-1-1'), tw_wind,'k')
     ax.annotate('Wind Speed (m/s)', xy=(0, 1), xycoords='axes fraction', fontsize=6,
@@ -526,6 +533,7 @@ if args.image:
     ax.xaxis.set_minor_locator(DayLocator(bymonthday=[5,10,15,20,25,30]))
     ax.xaxis.set_major_formatter(plt.NullFormatter())
     ax.set_xlim([extent[0],extent[1]])
+    #ax.set_ylim([0,25])
     ax.set_yticks(range(0,15,4))
     ax2 = ax.twinx()
     plt.plot(date2num(tw_time,'days since 1-1-1'), tw_td,'g')
@@ -541,7 +549,6 @@ if args.image:
     ax2.set_xlim([extent[0],extent[1]])
     for tl in ax2.get_yticklabels():
         tl.set_color('r')
-    """
     ax = plt.subplot2grid((9,100), (1, 0), colspan=100)
     cs = plt.imshow(np.transpose(mesh_grid_t), extent=extent, cmap=cmocean.cm.thermal, vmin=-2.0, vmax=10.0, aspect='auto', alpha=0.85)
     cs.cmap.set_under('w')
@@ -657,14 +664,3 @@ if args.image:
     plt.savefig('2018_BSITAE_prawler_image.png', bbox_inches='tight', dpi = (300))
     plt.close()
 
-if args.csv_out in ['temperature','T_20','temp']:
-    #at specified depth
-    '''
-    print "time,depth,T_20"
-    for i in range(0,np.shape(mesh_grid_t)[0],1):
-        datetemp = num2date(date_time[i]+1.,'Days since 0001-1-1')
-        print "{0},{1},{2}".format(datetemp.strftime('%Y-%m-%d %H:%M:%S'),press_grid[70],mesh_grid_t[i,70])
-    '''
-
-    #all values as depthxtime array
-    np.savetxt('SP03_temp.csv',mesh_grid_t,fmt='%.3f')
