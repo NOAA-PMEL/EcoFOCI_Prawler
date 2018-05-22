@@ -257,7 +257,6 @@ if args.met_rudix:
 
     #simple QC
     tw_wind = np.array(tw_wind)
-    print np.where(tw_wind > 100)[0]
     tw_wind[np.where(tw_wind > 100)[0]] = np.nan
 
 
@@ -523,8 +522,8 @@ extent = (date_time.min(), date_time.max(), press_grid.max(), press_grid.min()) 
 if args.image:
 
     fig = plt.figure()
-    ax = plt.subplot2grid((9,100), (0, 0), colspan=98)
-    plt.plot(date2num(tw_time,'days since 1-1-1'), tw_wind,'k')
+    ax = plt.subplot2grid((9,100), (0, 0), colspan=97)
+    plt.plot(tw_time, tw_wind,'k')
     ax.annotate('Wind Speed (m/s)', xy=(0, 1), xycoords='axes fraction', fontsize=6,
                 xytext=(1, -5), textcoords='offset points',
                 ha='left', va='top')
@@ -532,12 +531,13 @@ if args.image:
     ax.xaxis.set_major_locator(DayLocator(bymonthday=15))
     ax.xaxis.set_minor_locator(DayLocator(bymonthday=[5,10,15,20,25,30]))
     ax.xaxis.set_major_formatter(plt.NullFormatter())
+    ax.tick_params(labelbottom=False)
     ax.set_xlim([extent[0],extent[1]])
     #ax.set_ylim([0,25])
     ax.set_yticks(range(0,15,4))
     ax2 = ax.twinx()
-    plt.plot(date2num(tw_time,'days since 1-1-1'), tw_td,'g')
-    plt.plot(date2num(tw_time,'days since 1-1-1'), tw_temp,'r')
+    plt.plot(tw_time, tw_td,'g')
+    plt.plot(tw_time, tw_temp,'r')
     #ax2.set_ylabel('Air Temp. (C)', color='r',rotation=0, labelpad=90,horizontalalignment='right')
     ax2.annotate('Air Temp. (C)', xy=(1, 1), xycoords='axes fraction', fontsize=6, color='r',
                 xytext=(-1, -5), textcoords='offset points',
@@ -545,6 +545,7 @@ if args.image:
     ax2.annotate('Dewpoint (C)', xy=(0.5, 1), xycoords='axes fraction', fontsize=6, color='g',
                 xytext=(-0, -5), textcoords='offset points',
                 ha='right', va='top')
+    ax2.set_ylim([0,18])
     ax2.set_yticks(range(0,18,4))
     ax2.set_xlim([extent[0],extent[1]])
     for tl in ax2.get_yticklabels():
