@@ -562,8 +562,6 @@ if args.image:
     cbar.locator = tick_locator
     cbar.update_ticks()
     cbar.set_label('Temperature (C)',rotation=0, labelpad=90,horizontalalignment='right')
-    ax.set_xlim([extent[0],extent[1]])
-    
     ax = plt.subplot2grid((9,100), (2, 0), colspan=100)
     cs = plt.imshow(np.transpose(mesh_grid_s), extent=extent, cmap=cmocean.cm.haline, vmin=31.30, vmax=32.6, aspect='auto')
     cs.cmap.set_under('w')
@@ -577,8 +575,6 @@ if args.image:
     cbar.locator = tick_locator
     cbar.update_ticks()
     cbar.set_label('Salinitity (PSU)',rotation=0, labelpad=90,horizontalalignment='right')
-    ax.set_xlim([extent[0],extent[1]])
-    
     ax = plt.subplot2grid((9,100), (3, 0), colspan=100)
     cs = plt.imshow(np.transpose(mesh_grid_sig), extent=extent, cmap=cmocean.cm.dense, vmin=23.6, vmax=26.0, aspect='auto', alpha=0.85)
     cs.cmap.set_under('w')
@@ -592,8 +588,6 @@ if args.image:
     cbar.locator = tick_locator
     cbar.update_ticks()
     cbar.set_label('SigmaT (kg/m^3)',rotation=0, labelpad=90,horizontalalignment='right')
-    ax.set_xlim([extent[0],extent[1]])
-    
     ax = plt.subplot2grid((9,100), (4, 0), colspan=100)
     cs = plt.imshow(np.transpose(mesh_grid_o), extent=extent, cmap=cmocean.cm.oxy, vmin=150, vmax=350, aspect='auto')
     cs.cmap.set_under('w')
@@ -607,8 +601,6 @@ if args.image:
     cbar.locator = tick_locator
     cbar.update_ticks()
     cbar.set_label('Dissolved O2 Conc',rotation=0, labelpad=90,horizontalalignment='right')
-    ax.set_xlim([extent[0],extent[1]])
-    
     ax = plt.subplot2grid((9,100), (5, 0), colspan=100)
     cs = plt.imshow(np.transpose(mesh_grid_osat), extent=extent, cmap=cmocean.cm.delta_r, vmin=60, vmax=120, aspect='auto')
     cs.cmap.set_under('w')
@@ -622,8 +614,6 @@ if args.image:
     cbar.locator = tick_locator
     cbar.update_ticks()
     cbar.set_label('Dissolved O2 (% Sat)',rotation=0, labelpad=90,horizontalalignment='right')
-    ax.set_xlim([extent[0],extent[1]])
-    
     ax = plt.subplot2grid((9,100), (6, 0), colspan=100)
     cs = plt.imshow(np.transpose(mesh_grid_chl), extent=extent, cmap=cmocean.cm.algae, vmin=0, vmax=15, aspect='auto')
     cs.cmap.set_under('w')
@@ -637,8 +627,6 @@ if args.image:
     cbar.locator = tick_locator
     cbar.update_ticks()
     cbar.set_label('Chlor. A (ug/ml)',rotation=0, labelpad=90,horizontalalignment='right')
-    ax.set_xlim([extent[0],extent[1]])
-    
     ax = plt.subplot2grid((9,100), (7, 0), colspan=100)
     cs = plt.imshow(np.transpose(mesh_grid_turb), extent=extent, cmap=cmocean.cm.turbid, vmin=0, vmax=50, aspect='auto')
     cs.cmap.set_under('w')
@@ -652,8 +640,6 @@ if args.image:
     cbar.locator = tick_locator
     cbar.update_ticks()
     cbar.set_label('Turbidity (NTU)',rotation=0, labelpad=90,horizontalalignment='right')
-    ax.set_xlim([extent[0],extent[1]])
-    
     ax = plt.subplot2grid((9,100), (8, 0), colspan=100)
     cs = plt.imshow(np.transpose(mesh_grid_stats), extent=extent, cmap=cmocean.cm.gray_r, vmin=0, vmax=5, aspect='auto')
     cs.cmap.set_under('w')
