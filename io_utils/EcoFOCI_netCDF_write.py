@@ -1170,7 +1170,7 @@ class NetCDF_Create_Profile_Ragged1D(object):
 
         #build record variable attributes
         rec_vars, rec_var_name, rec_var_longname = [], [], []
-        rec_var_generic_name, rec_var_FORTRAN, rec_var_units, rec_var_epic = [], [], [], []
+        rec_var_generic_name, rec_var_FORTRAN, rec_var_units, rec_var_epic, rec_var_type = [], [], [], [], []
 
         #cycle through epic dictionary and create nc parameters
         for evar in EPIC_VARS_dict.keys():
@@ -1181,6 +1181,7 @@ class NetCDF_Create_Profile_Ragged1D(object):
             rec_var_longname.append( EPIC_VARS_dict[evar]['longname'] )
             rec_var_generic_name.append( EPIC_VARS_dict[evar]['generic_name'] )
             rec_var_units.append( EPIC_VARS_dict[evar]['units'] )
+            rec_var_type.append( EPIC_VARS_dict[evar]['type'] )
         
         rec_vars = ['record_number'] + rec_vars
 
@@ -1188,7 +1189,7 @@ class NetCDF_Create_Profile_Ragged1D(object):
         rec_var_longname = [''] + rec_var_longname
         rec_var_generic_name = [''] + rec_var_generic_name
         rec_var_units = ['sequential measurement id'] + rec_var_units
-        rec_var_type= ['f4'] + ['f4' for spot in rec_vars[1:]]
+        rec_var_type= ['f4'] + rec_var_type
         
         var_class = []
         var_class.append(self.rootgrpID.createVariable(rec_vars[0], rec_var_type[0], self.dim_vars[0]))#time1
@@ -1338,7 +1339,7 @@ class NetCDF_Create_Profile_Ragged2D(object):
 
         #build record variable attributes
         rec_vars, rec_var_name, rec_var_longname = [], [], []
-        rec_var_generic_name, rec_var_FORTRAN, rec_var_units, rec_var_epic = [], [], [], []
+        rec_var_generic_name, rec_var_FORTRAN, rec_var_units, rec_var_epic, rec_var_type = [], [], [], [], []
 
         #cycle through epic dictionary and create nc parameters
         for evar in EPIC_VARS_dict.keys():
@@ -1347,6 +1348,7 @@ class NetCDF_Create_Profile_Ragged2D(object):
             rec_var_longname.append( EPIC_VARS_dict[evar]['longname'] )
             rec_var_generic_name.append( EPIC_VARS_dict[evar]['generic_name'] )
             rec_var_units.append( EPIC_VARS_dict[evar]['units'] )
+            rec_var_type.append( EPIC_VARS_dict[evar]['type'] )
         
         rec_vars = ['profile_number','observation_number'] + rec_vars
 
@@ -1354,7 +1356,7 @@ class NetCDF_Create_Profile_Ragged2D(object):
         rec_var_longname = ['',''] + rec_var_longname
         rec_var_generic_name = ['',''] + rec_var_generic_name
         rec_var_units = ['sequential profile id', 'sequential observation id'] + rec_var_units
-        rec_var_type= ['f4', 'f4'] + ['f4' for spot in rec_vars[2:]]
+        rec_var_type= ['f4'] + rec_var_type
         
         var_class = []
         var_class.append(self.rootgrpID.createVariable(rec_vars[0], rec_var_type[0], self.dim_vars[0]))

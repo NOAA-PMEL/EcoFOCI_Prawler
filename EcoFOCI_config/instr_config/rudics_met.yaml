@@ -5,48 +5,58 @@ time:
   longname: date and time since reference time
   time_origin: '1900-01-01 00:00:00'
   units: 'hours since 1900-01-01T00:00:00Z'
+  type: f8
 latitude:
   name: latitude
   generic_name: latitude
   units: degrees_north
   longname: 'latitude'
+  type: f4
 longitude:
   name: longitude
   generic_name: longitude
   units: degrees_east
   longname: 'longitude'
+  type: f4
 air_temperature: 
   name: "air_temperature"
   generic_name: "AT"
   units: "degree_C"
   longname: "Air Temperature (degree_C)"
+  type: f4
 air_pressure_at_sealevel: 
   name: "air_pressure_at_sealevel"
   generic_name: "BP"
   units: "mbar"
   longname: "BAROMETRIC PRESSURE (MB)"
+  type: f4
 wind_from_direction: 
   name: "wind_from_direction"
   generic_name: "WD"
   units: "degrees true"
   longname: "WIND DIRECTION (degrees true)"
+  type: f4
 relative_humidity: 
   name: "relative_humidity"
   generic_name: "rh"
   units: "percent"
   longname: "RELATIVE HUMIDITY (%)"
+  type: f4
 northward_wind: 
   name: "northward_wind"
   generic_name: "V"
   units: "m s-1"
   longname: "WIND V (M/S)"
+  type: f4
 wind_speed: 
   name: "wind_speed"
   generic_name: "WS"
   units: "m s-1"
   longname: "WIND SPEED (M/S)"
+  type: f4
 eastward_wind: 
   name: "eastward_wind"
   generic_name: "U"
   units: "m s-1"
   longname: "WIND U (M/S)"
+  type: f4
