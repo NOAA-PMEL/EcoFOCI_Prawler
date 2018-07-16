@@ -196,7 +196,7 @@ if args.met:
     ncinstance.sbeglobal_atts(raw_data_file=args.DataPath.split('/')[-1], 
         History='File Created.')
     ncinstance.dimension_init(time_len=recnum)
-    ncinstance.variable_init(EPIC_VARS_dict,udunits_time_str='hours since 1900-1-1')
+    ncinstance.variable_init(EPIC_VARS_dict,udunits_time_str='hours since 1900-01-01T00:00:00Z')
     ncinstance.add_coord_data(time=range(1,recnum+1))
     ncinstance.add_data(EPIC_VARS_dict,data_dic=data_dic['met'],missing_values=np.nan)
     ncinstance.close()
@@ -213,7 +213,7 @@ if args.is2D:
     ncinstance.sbeglobal_atts(raw_data_file=args.DataPath.split('/')[-1], 
         History='File Created.  Aanderaa Optode Dissolved O2 compensated for Salinity/Depth')
     ncinstance.dimension_init(profilenum_len=len(data_dic.keys()),obsnum_len=np.max(obs))
-    ncinstance.variable_init(EPIC_VARS_dict,udunits_time_str='hours since 1900-1-1')
+    ncinstance.variable_init(EPIC_VARS_dict,udunits_time_str='hours since 1900-01-01T00:00:00Z')
     ncinstance.add_coord_data(profile_num=data_dic.keys(), obs_num=range(1,np.max(obs)+1))
     for ind, profile_num, in enumerate(data_dic.keys()):
         print "Adding Profile {profile_num}".format(profile_num=profile_num)
