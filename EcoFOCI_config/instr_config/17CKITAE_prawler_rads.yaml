@@ -1,0 +1,51 @@
+---
+time:
+  name: time
+  generic_name: time
+  longname: date and time since reference time
+  time_origin: '1900-01-01 00:00:00'
+  units: 'hours since 1900-01-01T00:00:00Z'
+  type: f8
+SWRAD: 
+  name: SWRAD
+  standard_name: downwelling_shortwave_flux_in_air
+  generic_name: sw
+  units: W m-2
+  longname: 'Global Shortwave Irradiance at surface'
+  instrument: Eppley PSP
+  type: f4
+LWRAD: 
+  name: LWRAD
+  standard_name: downwelling_longwave_flux_in_air
+  generic_name: lw
+  units: W m-2
+  longname: 'Downlwelling Longwave Irradiance at surface'
+  instrument: Eppley PIR
+  type: f4
+LWRAD_net: 
+  name: LWRAD_net
+  standard_name: net_longwave_flux_in_air
+  generic_name: lw_net
+  units: W m-2
+  longname: 'Net Longwave Irradiance at surface'
+  instrument: Eppley PIR
+  type: f4
+CASETEMP:
+  name: CASETEMP
+  standard_name: '' 
+  generic_name: casetemp
+  units: degree_C
+  longname: 'Temperature of PIR Case'
+  instrument: Eppley PIR
+  type: f4  
+DOMETEMP:
+  name: DOMETEMP
+  standard_name: ''
+  generic_name: dometemp
+  units: degree_C
+  longname: 'Temperature of PIR Dome'
+  instrument: Eppley PIR
+  type: f4 
+#Global_Attributes:
+#  conventions: ['ACDD-1.3','COARDS','CF-1.7']
+#  standard_name_vocabulary: 'CF Standard Name Table v57'
