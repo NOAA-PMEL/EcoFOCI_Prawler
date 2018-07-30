@@ -2,11 +2,15 @@
  pico_realtime_processing.py
  
   
- 2017 SP03 Mooring Realtime Data parsing and archiving.
+ 2018 M2 Prawler Mooring Realtime Data parsing and archiving.
+ 
+ History
+ =======
 
+ 2018-07-30: Refactor interpolation code
  2018-05-01: copy original routine from 2017 SP03 for 2018 BER2 deployment
     ketch was replaced by yawl (which supports https) 
-2017-04-26: copy original routine from 2016 ITAE and modify for 2017 deployment SP03
+ 2017-04-26: copy original routine from 2016 ITAE and modify for 2017 deployment SP03
  2017-03-31: use pandas for excel read instead of readXlsx()
  2016-12-12: add calculation to correct oxygen optode for salinity (aanderaa optodes
         have internal salinity set to 0 for basic operation... fresh water equivalent)
@@ -202,8 +206,21 @@ class KetchMetData(object):
                     wind=(data['Spd'], 'm/s'))
 
 
+"""----------------------- Subroutines definitions --------------------------------------"""
 
+def fillgaps(profile_var):
+    mask = np.isnan(profile_var)
+    try:
+        profile_var[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), profile_var[~mask], right=-100000)
+    except ValueError: #handles samples with all nan's
+        profile_var[0]  = 0.0
+        profile_var[-1] = 0.0
+        mask = np.isnan(profile_var)
+        profile_var[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), profile_var[~mask], right=-100000)
+    except TypeError: #handles a cal profile which is at a fixed depth
+        pass
 
+    return profile_var
 
 """-------------------------------------- Main ----------------------------------------------"""
 
@@ -364,6 +381,7 @@ for k in data_dic.keys():
 
     #TODO: update with groupby statement
     for pg in press_grid:
+        """ Take the median value if multiple samples occur within same depth bin"""
         if not cal_profile:
             ireg_ind = np.where((irreg_depth > pg) & (irreg_depth <= pg+interval))
             mesh_depth_s = np.hstack((mesh_depth_s, np.median(irreg_sal[ireg_ind])))
@@ -376,76 +394,15 @@ for k in data_dic.keys():
             mesh_depth_stats = np.hstack((mesh_depth_stats, ireg_ind[0].size))
     
     if args.FillGaps:
-        mask = np.isnan(mesh_depth_s)
-        try:
-            mesh_depth_s[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_s[~mask], right=-100000)
-        except ValueError: #handles samples with all nan's
-            mesh_depth_s[0]  = 0.0
-            mesh_depth_s[-1] = 0.0
-            mask = np.isnan(mesh_depth_s)
-            mesh_depth_s[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_s[~mask], right=-100000)
-        except TypeError: #handles a cal profile which is at a fixed depth
-            pass
-        mask = np.isnan(mesh_depth_t)
-        try:
-            mesh_depth_t[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_t[~mask], right=-100000)
-        except ValueError: #handles samples with all nan's
-            mesh_depth_t[0]  = 0.0
-            mesh_depth_t[-1] = 0.0
-            mask = np.isnan(mesh_depth_t)
-            mesh_depth_t[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_t[~mask], right=-100000)
-        except TypeError: #handles a cal profile which is at a fixed depth
-            pass
-        mask = np.isnan(mesh_depth_o)
-        try:
-            mesh_depth_o[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_o[~mask], right=-100000)
-        except ValueError: #handles samples with all nan's
-            mesh_depth_o[0]  = 0.0
-            mesh_depth_o[-1] = 0.0
-            mask = np.isnan(mesh_depth_o)
-            mesh_depth_o[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_o[~mask], right=-100000)
-        except TypeError: #handles a cal profile which is at a fixed depth
-            pass
-        mask = np.isnan(mesh_depth_osat)
-        try:
-            mesh_depth_osat[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_osat[~mask], right=-100000)
-        except ValueError: #handles samples with all nan's
-            mesh_depth_osat[0]  = 0.0
-            mesh_depth_osat[-1] = 0.0
-            mask = np.isnan(mesh_depth_osat)
-            mesh_depth_osat[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_osat[~mask], right=-100000)
-        except TypeError: #handles a cal profile which is at a fixed depth
-            pass        
-        mask = np.isnan(mesh_depth_chl)
-        try:
-            mesh_depth_chl[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_chl[~mask], right=-100000)
-        except ValueError: #handles samples with all nan's
-            mesh_depth_chl[0]  = 0.0
-            mesh_depth_chl[-1] = 0.0
-            mask = np.isnan(mesh_depth_chl)
-            mesh_depth_chl[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_chl[~mask], right=-100000)
-        except TypeError: #handles a cal profile which is at a fixed depth
-            pass
-        mask = np.isnan(mesh_depth_turb)
-        try:
-            mesh_depth_turb[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_turb[~mask], right=-100000)
-        except ValueError: #handles samples with all nan's
-            mesh_depth_turb[0]  = 0.0
-            mesh_depth_turb[-1] = 0.0
-            mask = np.isnan(mesh_depth_turb)
-            mesh_depth_turb[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_turb[~mask], right=-1000)
-        except TypeError: #handles a cal profile which is at a fixed depth
-            pass
-        mask = np.isnan(mesh_depth_sig)
-        try:
-            mesh_depth_sig[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_sig[~mask], right=-100000)
-        except ValueError: #handles samples with all nan's
-            mesh_depth_sig[0]  = 0.0
-            mesh_depth_sig[-1] = 0.0
-            mask = np.isnan(mesh_depth_sig)
-            mesh_depth_sig[mask] = np.interp(np.flatnonzero(mask), np.flatnonzero(~mask), mesh_depth_sig[~mask], right=-1000)
-        except TypeError: #handles a cal profile which is at a fixed depth
-            pass
+        """fill gaps in vertical profile """
+
+        mesh_depth_s = fillgaps(fillgaps)
+        mesh_depth_t = fillgaps(mesh_depth_t)
+        mesh_depth_o = fillgaps(mesh_depth_o)
+        mesh_depth_osat = fillgaps(mesh_depth_osat)
+        mesh_depth_chl = fillgaps(mesh_depth_chl)
+        mesh_depth_turb = fillgaps(mesh_depth_turb)
+        mesh_depth_sig = fillgaps(mesh_depth_sig)
 
     if not cal_profile:
         date_time = date_time + [cast_date]
