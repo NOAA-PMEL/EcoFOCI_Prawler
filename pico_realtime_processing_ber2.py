@@ -222,6 +222,7 @@ def fillgaps(profile_var):
 
     return profile_var
 
+
 """-------------------------------------- Main ----------------------------------------------"""
 
 parser = argparse.ArgumentParser(description='RUDICS PICO Prawler Data File')
@@ -396,7 +397,7 @@ for k in data_dic.keys():
     if args.FillGaps:
         """fill gaps in vertical profile """
 
-        mesh_depth_s = fillgaps(fillgaps)
+        mesh_depth_s = fillgaps(mesh_depth_s)
         mesh_depth_t = fillgaps(mesh_depth_t)
         mesh_depth_o = fillgaps(mesh_depth_o)
         mesh_depth_osat = fillgaps(mesh_depth_osat)

@@ -6,6 +6,7 @@
 
  History
  =======
+
  2018-07-30: Refactor interpolation code
  2018-05-01: copy original routine from 2017 SP03 for 2018 BER0 deployment
     ketch was replaced by yawl (which supports https) 
@@ -274,7 +275,6 @@ if args.met_rudix:
 
     #simple QC
     tw_wind = np.array(tw_wind)
-    print np.where(tw_wind > 100)[0]
     tw_wind[np.where(tw_wind > 100)[0]] = np.nan
 
 
@@ -382,7 +382,8 @@ for k in data_dic.keys():
 
     #TODO: update with groupby statement
     for pg in press_grid:
-        if not cal_profile:
+         """ Take the median value if multiple samples occur within same depth bin"""
+       if not cal_profile:
             ireg_ind = np.where((irreg_depth > pg) & (irreg_depth <= pg+interval))
             mesh_depth_s = np.hstack((mesh_depth_s, np.median(irreg_sal[ireg_ind])))
             mesh_depth_sig = np.hstack((mesh_depth_sig, np.median(irreg_sigmat[ireg_ind])))
@@ -396,7 +397,7 @@ for k in data_dic.keys():
     if args.FillGaps:
         """fill gaps in vertical profile """
 
-        mesh_depth_s = fillgaps(fillgaps)
+        mesh_depth_s = fillgaps(mesh_depth_s)
         mesh_depth_t = fillgaps(mesh_depth_t)
         mesh_depth_o = fillgaps(mesh_depth_o)
         mesh_depth_osat = fillgaps(mesh_depth_osat)
