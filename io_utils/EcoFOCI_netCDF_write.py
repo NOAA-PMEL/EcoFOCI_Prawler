@@ -8,6 +8,7 @@
  
   History:
  --------
+ 2018-09-13: Tweak to be python3 compliant
  2016-12-19: Add a class for ragged arrays (1D and 2D) - 1D is continuous file
  2016-12-16: Add a class for CF time conventions (1D and 2D) TODO: merge into other classes
  2016-09-16: Add a class for copying the existing structure of a file 
@@ -28,8 +29,8 @@ from netCDF4 import Dataset
 
 __author__   = 'Shaun Bell'
 __email__    = 'shaun.bell@noaa.gov'
-__created__  = datetime.datetime(2014, 01, 13)
-__modified__ = datetime.datetime(2014, 12, 02)
+__created__  = datetime.datetime(2014, 1, 13)
+__modified__ = datetime.datetime(2014, 12, 2)
 __version__  = "0.4.0"
 __status__   = "Development"
 
@@ -164,7 +165,7 @@ class NetCDF_Create_Timeseries(object):
             
         ### add variable attributes
         for i, v in enumerate(var_class): #4dimensional for all vars
-            print ("Adding Variable {0}").format(v)#
+            print(("Adding Variable {0}").format(v))#
             v.setncattr('name',rec_var_name[i])
             v.long_name = rec_var_longname[i]
             v.generic_name = rec_var_generic_name[i]
@@ -344,7 +345,7 @@ class NetCDF_Create_Profile(object):
             
         ### add variable attributes
         for i, v in enumerate(var_class): #4dimensional for all vars
-            print ("Adding Variable {0}").format(v)#
+            print(("Adding Variable {0}").format(v))#
             v.setncattr('name',rec_var_name[i])
             v.long_name = rec_var_longname[i]
             v.generic_name = rec_var_generic_name[i]
@@ -492,9 +493,9 @@ class NetCDF_Trimmed(object):
         rec_var_generic_name, rec_var_FORTRAN, rec_var_units, rec_var_epic = [], [], [], []
         
         for v_name in nchandle.variables.keys():
-            print v_name
+            print(v_name)
             if not v_name in ['time','time2','depth','lat','lon','latitude','longitude']:
-                print "Copying attributes for {0}".format(v_name)
+                print("Copying attributes for {0}".format(v_name))
                 rec_vars.append( v_name )
                 rec_var_name.append( nchandle.variables[v_name].name )
                 rec_var_longname.append( nchandle.variables[v_name].long_name )
@@ -527,7 +528,7 @@ class NetCDF_Trimmed(object):
             
         ### add variable attributes
         for i, v in enumerate(var_class): #4dimensional for all vars
-            print ("Adding Variable {0}").format(v)#
+            print(("Adding Variable {0}").format(v))#
             v.setncattr('name',rec_var_name[i])
             v.long_name = rec_var_longname[i]
             v.generic_name = rec_var_generic_name[i]
@@ -661,9 +662,9 @@ class NetCDF_Copy_Struct(object):
         rec_var_generic_name, rec_var_FORTRAN, rec_var_units, rec_var_epic = [], [], [], []
         
         for v_name in variable_dic.keys():
-            print v_name
+            print(v_name)
             if not v_name in ['time','time2','depth','lat','lon','latitude','longitude']:
-                print "Copying attributes for {0}".format(v_name)
+                print("Copying attributes for {0}".format(v_name))
                 rec_vars.append( v_name )
                 rec_var_name.append( variable_dic[v_name].name )
                 rec_var_longname.append( variable_dic[v_name].long_name )
@@ -696,7 +697,7 @@ class NetCDF_Copy_Struct(object):
             
         ### add variable attributes
         for i, v in enumerate(var_class): #4dimensional for all vars
-            print ("Adding Variable {0}").format(v)#
+            print(("Adding Variable {0}").format(v))#
             v.setncattr('name',rec_var_name[i])
             v.long_name = rec_var_longname[i]
             v.generic_name = rec_var_generic_name[i]
@@ -835,9 +836,9 @@ class CF_NC(object):
         rec_var_generic_name, rec_var_FORTRAN, rec_var_units, rec_var_epic = [], [], [], []
         
         for v_name in nchandle.variables.keys():
-            print v_name
+            print(v_name)
             if not v_name in ['time','time2','depth','lat','lon','latitude','longitude']:
-                print "Copying attributes for {0}".format(v_name)
+                print("Copying attributes for {0}".format(v_name))
                 rec_vars.append( v_name )
                 rec_var_name.append( nchandle.variables[v_name].name )
                 rec_var_longname.append( nchandle.variables[v_name].long_name )
@@ -869,7 +870,7 @@ class CF_NC(object):
             
         ### add variable attributes
         for i, v in enumerate(var_class): #4dimensional for all vars
-            print ("Adding Variable {0}").format(v)#
+            print(("Adding Variable {0}").format(v))#
             v.setncattr('name',rec_var_name[i])
             v.long_name = rec_var_longname[i]
             v.generic_name = rec_var_generic_name[i]
@@ -1004,9 +1005,9 @@ class CF_NC_2D(object):
         rec_var_generic_name, rec_var_FORTRAN, rec_var_units, rec_var_epic = [], [], [], []
         
         for v_name in nchandle.variables.keys():
-            print v_name
+            print(v_name)
             if not v_name in ['time','time2','depth','lat','lon','latitude','longitude']:
-                print "Copying attributes for {0}".format(v_name)
+                print("Copying attributes for {0}".format(v_name))
                 rec_vars.append( v_name )
                 rec_var_name.append( nchandle.variables[v_name].name )
                 rec_var_longname.append( nchandle.variables[v_name].long_name )
@@ -1038,7 +1039,7 @@ class CF_NC_2D(object):
             
         ### add variable attributes
         for i, v in enumerate(var_class): #4dimensional for all vars
-            print ("Adding Variable {0}").format(v)#
+            print(("Adding Variable {0}").format(v))#
             v.setncattr('name',rec_var_name[i])
             v.long_name = rec_var_longname[i]
             v.generic_name = rec_var_generic_name[i]
@@ -1199,7 +1200,7 @@ class NetCDF_Create_Profile_Ragged1D(object):
             
         ### add variable attributes
         for i, v in enumerate(var_class): #4dimensional for all vars
-            print ("Adding Variable {0}").format(v)#
+            print(("Adding Variable {0}").format(v))#
             v.setncattr('name',rec_var_name[i])
             v.long_name = rec_var_longname[i]
             v.generic_name = rec_var_generic_name[i]
@@ -1367,7 +1368,7 @@ class NetCDF_Create_Profile_Ragged2D(object):
             
         ### add variable attributes
         for i, v in enumerate(var_class): #4dimensional for all vars
-            print ("Adding Variable {0}").format(v)#
+            print(("Adding Variable {0}").format(v))#
             v.setncattr('name',rec_var_name[i])
             v.long_name = rec_var_longname[i]
             v.generic_name = rec_var_generic_name[i]
@@ -1400,7 +1401,7 @@ class NetCDF_Create_Profile_Ragged2D(object):
 
         for EPICdic_key in EPIC_VARS_dict.keys():
             di = self.rec_vars.index(EPICdic_key)
-            print "adding data for {EPICdic_key}".format(EPICdic_key=EPICdic_key)
+            print("adding data for {EPICdic_key}".format(EPICdic_key=EPICdic_key))
             ragged_ind = np.where(~np.isnan(data_dic[EPICdic_key]))[0]
             try:
                 self.var_class[di][profile_num,ragged_ind] = np.array(data_dic[EPICdic_key])[ragged_ind]
@@ -1408,7 +1409,7 @@ class NetCDF_Create_Profile_Ragged2D(object):
                 pass
             except IndexError:
                 pass
-            print "done"
+            print("done")
         
     def add_history(self, new_history):
         """Adds timestamp (UTC time) and history to existing information"""
