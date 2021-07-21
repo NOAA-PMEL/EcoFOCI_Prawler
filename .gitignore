@@ -1,3 +1,4 @@
 *.download
 *.nc
 .DS_Store
+*checkpoint*
